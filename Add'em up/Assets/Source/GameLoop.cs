@@ -13,7 +13,7 @@ public class GameLoop : MonoBehaviour {
 		Time.fixedDeltaTime = 0.01f;
 	}
 	
-	void FixedUpdate () 
+	void FixedUpdate ()
 	{
 		player.updateStatus();
 	}
