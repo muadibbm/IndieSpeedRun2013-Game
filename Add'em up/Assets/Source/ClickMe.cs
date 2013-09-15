@@ -42,6 +42,8 @@ public class ClickMe : MonoBehaviour {
 	private float rotZ;
 	private float rotW;
 	
+	private float deathCounter;
+	
 	void Start () 
 	{
 		animation = GetComponent<AnimatedSpritesheet>();
@@ -83,12 +85,17 @@ public class ClickMe : MonoBehaviour {
 		{
 			transform.position = new Vector3(posX, transform.position.y, posZ);
 		}
+		if(deathCounter > 40)
+		{
+			renderer.enabled = collider.enabled = false;
+		}
 	}
 	
 	private void updateAIState()
 	{
 		bTakeDamage = (prevHealth > health);
-		if((Mathf.Sqrt(Mathf.Pow(GameObject.Find ("Player").transform.position.x - transform.position.x,2)) < fightRadius))
+		if((Mathf.Sqrt(Mathf.Pow(GameObject.Find ("Player").transform.position.x - transform.position.x,2)) < fightRadius) &&
+			(Mathf.Sqrt(Mathf.Pow(GameObject.Find ("Player").transform.position.y - transform.position.y,2)) < fightRadius))
 		{
 			bIsR = (GameObject.Find("Player").transform.position.x > transform.position.x);
 			bAttacking = true;
@@ -113,10 +120,17 @@ public class ClickMe : MonoBehaviour {
 	
 	private void updateAnimation()
 	{
-		Debug.Log (bAttacking);
 		if(bIsR)
 		{
-			if(bTakeDamage)
+			if(health < 0)
+			{
+				deathCounter++;
+				animation.columns = 2;
+				animation.rows = 2;
+				animation.framesPerSecond = 4;
+				renderer.material = death_sprite_R;
+			}
+			else if(bTakeDamage)
 			{
 				animation.columns = 2;
 				animation.rows = 2;
@@ -125,7 +139,10 @@ public class ClickMe : MonoBehaviour {
 			}
 			else if(bAttacking)
 			{
-				
+				animation.columns = 5;
+				animation.rows = 2;
+				animation.framesPerSecond = 10;
+				renderer.material = punch_sprite_R;
 			}
 			else if(bMoveRight)
 			{
@@ -144,7 +161,15 @@ public class ClickMe : MonoBehaviour {
 		}
 		else
 		{
-			if(bTakeDamage)
+			if(health < 0)
+			{
+				deathCounter++;
+				animation.columns = 2;
+				animation.rows = 2;
+				animation.framesPerSecond = 4;
+				renderer.material = death_sprite_L;
+			}
+			else if(bTakeDamage)
 			{
 				animation.columns = 2;
 				animation.rows = 2;
@@ -153,7 +178,10 @@ public class ClickMe : MonoBehaviour {
 			}
 			else if(bAttacking)
 			{
-				
+				animation.columns = 5;
+				animation.rows = 2;
+				animation.framesPerSecond = 10;
+				renderer.material = punch_sprite_L;
 			}
 			else if(bMoveLeft)
 			{

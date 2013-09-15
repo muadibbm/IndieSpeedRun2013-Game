@@ -59,6 +59,7 @@ public class Player : MonoBehaviour {
 	private float rotW;
 	
 	private int attackCounter;
+	private int deathCounter;
 	
 	public void init () 
 	{
@@ -124,6 +125,10 @@ public class Player : MonoBehaviour {
 			bAttacking = false;
 			attackCounter = 0;
 		}
+		if(deathCounter > 40)
+		{
+			renderer.enabled = collider.enabled = false;
+		}
 	}
 	
 	private void updatePlayerState()
@@ -153,7 +158,8 @@ public class Player : MonoBehaviour {
 				animation.columns = 3;
 				animation.rows = 2;
 				animation.framesPerSecond = 6;
-				renderer.material = death_sprite_R;		
+				renderer.material = death_sprite_R;	
+				deathCounter++;
 			}
 			else if(bPopUp)
 			{
@@ -218,7 +224,8 @@ public class Player : MonoBehaviour {
 				animation.columns = 3;
 				animation.rows = 2;
 				animation.framesPerSecond = 6;
-				renderer.material = death_sprite_L;		
+				renderer.material = death_sprite_L;
+				deathCounter++;
 			}
 			else if(bPopUp)
 			{
