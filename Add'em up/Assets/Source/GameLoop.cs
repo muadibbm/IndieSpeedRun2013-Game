@@ -6,6 +6,8 @@ public class GameLoop : MonoBehaviour {
 	
 	public static Player player;
 	
+	private static GameObject camera;
+	
 	private static List <Renderer> flashObjects;
 	private static List <int> flashCounters;
 	private float aFlashCounter;
@@ -14,6 +16,7 @@ public class GameLoop : MonoBehaviour {
 	void Start () 
 	{
 		player = GameObject.Find ("Player").GetComponent<Player>();
+		camera = GameObject.Find ("Main Camera");
 		player.init();
 		Time.fixedDeltaTime = 0.01f;
 		flashObjects = new List<Renderer>();
@@ -25,6 +28,7 @@ public class GameLoop : MonoBehaviour {
 	{
 		player.updateStatus();
 		updateFlash();
+		camera.transform.position = new Vector3(camera.transform.position.x, player.gameObject.transform.position.y, camera.transform.position.z);
 	}
 	
 	public static void flash(Renderer pRenderer)
