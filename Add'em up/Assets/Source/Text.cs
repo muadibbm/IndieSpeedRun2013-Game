@@ -29,7 +29,6 @@ public class Text : MonoBehaviour {
 				return;
 			}
 		}
-		Debug.Log (fadeCounter);
 	}
 	
 	public void fade () 
