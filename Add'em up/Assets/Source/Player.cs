@@ -132,7 +132,7 @@ public class Player : MonoBehaviour {
 		{
 			renderer.enabled = collider.enabled = false;
 		}
-		if(deathCounter > 60)
+		if(deathCounter > 50)
 		{
 			Application.LoadLevel("Beat'em Adds");
 		}

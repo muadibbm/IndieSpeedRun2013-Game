@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: .150000006
-  health: 1000
+  health: 750
   damage: 20
   detectionRadius: 200
   fightRadius: 20
