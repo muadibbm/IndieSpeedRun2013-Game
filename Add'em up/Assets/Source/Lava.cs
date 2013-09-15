@@ -17,4 +17,14 @@ public class Lava : MonoBehaviour
 	{
 		bKill = pKill;
 	}
+	
+	void OnCollisionEnter(Collision collision) {
+    	if(collision.collider.Equals(GameObject.Find("Player").collider))
+			bKill = true;
+	}
+	
+	void OnCollisionExit(Collision collision) {
+    	if(collision.collider.Equals(GameObject.Find("Player").collider))
+			bKill = false;
+	}
 }

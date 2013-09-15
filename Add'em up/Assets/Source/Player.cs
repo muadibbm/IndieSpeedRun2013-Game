@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
 	public int damage = 50;
 	
 	private int max_health;
+	private int prevHealth;
 	
 	private bool bIsR;
 	
@@ -35,6 +36,8 @@ public class Player : MonoBehaviour {
 	public static bool bJumping;
 	public static bool bIdle;
 	public static bool bPopUp;
+	public static bool bTakeDamage;
+	public static bool bAttacking;
 	
 	private int popUpAnimCounter;
 	
@@ -55,6 +58,8 @@ public class Player : MonoBehaviour {
 	private float rotZ;
 	private float rotW;
 	
+	private int attackCounter;
+	
 	public void init () 
 	{
 		playerObject = GameObject.Find ("Player");
@@ -67,11 +72,12 @@ public class Player : MonoBehaviour {
 		rotZ = playerObject.transform.rotation.z;
 		rotW = playerObject.transform.rotation.w;
 		bJump = bMoveRight = bMoveLeft = bFalling = false;
-		bFalling = bJumping = bIdle = bPopUp = false;
+		bFalling = bJumping = bIdle = bPopUp = bTakeDamage = bAttacking = false;
 		newJumpingSpeed = jumping_speed;
 		bIsR = true;
 		popUpAnimCounter = 0;
 		max_health = health;
+		attackCounter = 0;
 	}
 	
 	public void updateStatus ()
@@ -82,6 +88,7 @@ public class Player : MonoBehaviour {
 		updateInput();
 		prevPosX = posX = playerObject.transform.position.x;
 		prevPosY = posY = playerObject.transform.position.y;
+		prevHealth = health;
 		if(bJump)
 		{
 			posY += newJumpingSpeed;
@@ -110,6 +117,13 @@ public class Player : MonoBehaviour {
 			health = max_health;
 		else
 			health += regen_rate;
+		if(bAttacking)
+			attackCounter++;
+		if(attackCounter > 40)
+		{
+			bAttacking = false;
+			attackCounter = 0;
+		}
 	}
 	
 	private void updatePlayerState()
@@ -117,6 +131,7 @@ public class Player : MonoBehaviour {
 		bIdle = (Mathf.Abs(playerObject.transform.position.x - prevPosX) < speed && Mathf.Abs(playerObject.transform.position.y - prevPosY) < speed);
 		bFalling = (prevPosY > playerObject.transform.position.y && Mathf.Abs(playerObject.transform.position.y - prevPosY) > 0.1f);
 		bJumping = (prevPosY < playerObject.transform.position.y && Mathf.Abs(playerObject.transform.position.y - prevPosY) > 0.1f);
+		bTakeDamage = (prevHealth > health);
 //		if(bIdle)
 //			Debug.Log ("is Idle");
 //		if(bJumping)
@@ -127,14 +142,20 @@ public class Player : MonoBehaviour {
 //			Debug.Log ("is Moving left");
 //		if(bMoveRight)
 //			Debug.Log ("is Moving right");
-		//Debug.Log ("player_health: " + health);
 	}
 	
 	private void updateAnimation()
 	{
 		if(bIsR)
 		{
-			if(bPopUp)
+			if(health < 0)
+			{
+				animation.columns = 3;
+				animation.rows = 2;
+				animation.framesPerSecond = 6;
+				renderer.material = death_sprite_R;		
+			}
+			else if(bPopUp)
 			{
 				popUpAnimCounter++;
 				if(popUpAnimCounter <= 30)
@@ -150,6 +171,20 @@ public class Player : MonoBehaviour {
 					popUpAnimCounter = 0;
 					bPopUp = false;
 				}
+			}
+			else if(bAttacking)
+			{
+				animation.columns = 4;
+				animation.rows = 2;
+				animation.framesPerSecond = 16;
+				renderer.material = punch_sprite_R;
+			}
+			else if(bTakeDamage)
+			{
+				animation.columns = 4;
+				animation.rows = 2;
+				animation.framesPerSecond = 8;
+				renderer.material = damage_sprite_R;	
 			}
 			else if(bJumping)
 			{
@@ -167,32 +202,25 @@ public class Player : MonoBehaviour {
 			}
 			else if(bIdle)
 			{
-				if(health > max_health/2)
+				if(health > 0)
 				{
 					animation.columns = 3;
 					animation.rows = 2;
 					animation.framesPerSecond = 6;
 					renderer.material = idle_sprite_R;
 				}
-				else if(health > 0)
-				{
-					animation.columns = 4;
-					animation.rows = 2;
-					animation.framesPerSecond = 8;
-					renderer.material = damage_sprite_R;	
-				}
-				else
-				{
-					animation.columns = 3;
-					animation.rows = 2;
-					animation.framesPerSecond = 6;
-					renderer.material = death_sprite_R;	
-				}
 			}
 		}
 		else
 		{
-			if(bPopUp)
+			if(health < 0)
+			{
+				animation.columns = 3;
+				animation.rows = 2;
+				animation.framesPerSecond = 6;
+				renderer.material = death_sprite_L;		
+			}
+			else if(bPopUp)
 			{
 				popUpAnimCounter++;
 				if(popUpAnimCounter <= 30)
@@ -208,6 +236,20 @@ public class Player : MonoBehaviour {
 					popUpAnimCounter = 0;
 					bPopUp = false;
 				}
+			}
+			else if(bAttacking)
+			{
+				animation.columns = 4;
+				animation.rows = 2;
+				animation.framesPerSecond = 16;
+				renderer.material = punch_sprite_L;
+			}
+			else if(bTakeDamage)
+			{
+				animation.columns = 4;
+				animation.rows = 2;
+				animation.framesPerSecond = 8;
+				renderer.material = damage_sprite_L;	
 			}
 			else if(bJumping)
 			{
@@ -225,26 +267,12 @@ public class Player : MonoBehaviour {
 			}
 			else if(bIdle)
 			{
-				if(health > max_health/2)
+				if(health > 0)
 				{
 					animation.columns = 3;
 					animation.rows = 2;
 					animation.framesPerSecond = 6;
-					renderer.material = idle_sprite_L;	
-				}
-				else if(health > 0)
-				{
-					animation.columns = 4;
-					animation.rows = 2;
-					animation.framesPerSecond = 8;
-					renderer.material = damage_sprite_L;	
-				}
-				else
-				{
-					animation.columns = 3;
-					animation.rows = 2;
-					animation.framesPerSecond = 6;
-					renderer.material = death_sprite_L;		
+					renderer.material = idle_sprite_L;		
 				}
 			}
 		}
@@ -267,6 +295,8 @@ public class Player : MonoBehaviour {
 			bMoveRight = false;
 		if(Input.GetKeyDown(KeyCode.Space))
 			bPopUp = true;
+		if(Input.GetKeyDown(KeyCode.Return))
+			bAttacking = true;
 	}
 	
 	private void popUp()
@@ -277,5 +307,13 @@ public class Player : MonoBehaviour {
 			playerObject.transform.position = new Vector3(playerObject.transform.position.x - popUp_Speed, playerObject.transform.position.y, posZ);
 		if(bJumping)
 			playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + popUp_Speed, posZ);
+	}
+	
+	void OnCollisionStay(Collision collision) {
+		if(collision.gameObject.GetComponent<ClickMe>()!=null)
+		{
+			if(bAttacking)
+				collision.gameObject.GetComponent<ClickMe>().health -= damage;
+		}
 	}
 }

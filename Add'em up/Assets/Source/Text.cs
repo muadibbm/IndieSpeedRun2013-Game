@@ -31,8 +31,8 @@ public class Text : MonoBehaviour {
 		}
 	}
 	
-	public void fade () 
-	{
-		bFade = true;
+	void OnCollisionEnter(Collision collision) {
+    	if(collision.collider.Equals(GameObject.Find("Player").collider))
+			bFade = true;
 	}
 }
