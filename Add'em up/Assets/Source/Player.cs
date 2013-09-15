@@ -110,7 +110,6 @@ public class Player : MonoBehaviour {
 			health = max_health;
 		else
 			health += regen_rate;
-		Debug.Log ("player_health: " + health);
 	}
 	
 	private void updatePlayerState()
@@ -128,6 +127,7 @@ public class Player : MonoBehaviour {
 //			Debug.Log ("is Moving left");
 //		if(bMoveRight)
 //			Debug.Log ("is Moving right");
+		//Debug.Log ("player_health: " + health);
 	}
 	
 	private void updateAnimation()
