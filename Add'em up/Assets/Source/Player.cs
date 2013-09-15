@@ -6,6 +6,7 @@ public class Player : MonoBehaviour {
 	public float jumping_speed = 0.5f;
 	public float speed = 0.3f;
 	public float popUp_Speed = 20f;
+	public int popUp_CoolDown = 200;
 	public int health = 10000;
 	public int regen_rate = 1;
 	public int damage = 50;
@@ -60,6 +61,7 @@ public class Player : MonoBehaviour {
 	
 	private int attackCounter;
 	private int deathCounter;
+	private int popUpCoolDownCounter;
 	
 	public void init () 
 	{
@@ -79,6 +81,7 @@ public class Player : MonoBehaviour {
 		popUpAnimCounter = 0;
 		max_health = health;
 		attackCounter = 0;
+		popUpCoolDownCounter = popUp_CoolDown;
 	}
 	
 	public void updateStatus ()
@@ -129,6 +132,10 @@ public class Player : MonoBehaviour {
 		{
 			renderer.enabled = collider.enabled = false;
 		}
+		if(popUpCoolDownCounter < popUp_CoolDown)
+			popUpCoolDownCounter++;
+		else
+			popUpCoolDownCounter = popUp_CoolDown;
 	}
 	
 	private void updatePlayerState()
@@ -300,7 +307,7 @@ public class Player : MonoBehaviour {
 			bMoveRight = true;
 		if(Input.GetKeyUp(KeyCode.D))
 			bMoveRight = false;
-		if(Input.GetKeyDown(KeyCode.Space))
+		if(Input.GetKeyDown(KeyCode.Space) && popUpCoolDownCounter == popUp_CoolDown)
 			bPopUp = true;
 		if(Input.GetKeyDown(KeyCode.Return))
 			bAttacking = true;
@@ -308,6 +315,7 @@ public class Player : MonoBehaviour {
 	
 	private void popUp()
 	{
+		popUpCoolDownCounter = 0;
 		if(bIsR)
 			playerObject.transform.position = new Vector3(playerObject.transform.position.x + popUp_Speed, playerObject.transform.position.y, posZ);
 		else
