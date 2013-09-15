@@ -63,20 +63,20 @@ public class Screamer : MonoBehaviour {
 		}
 		if(bFloatUp)
 		{
-			floatingSpeed += 0.002f;
-			if(floatingSpeed >= 0.06f)
+			floatingSpeed += 0.003f;
+			if(floatingSpeed >= 0.1f)
 			{
-				floatingSpeed = 0.06f;	
+				floatingSpeed = 0.1f;	
 				bFloatUp = false;
 				bFloatDown = true;
 			}
 		}
 		if(bFloatDown)
 		{
-			floatingSpeed -= 0.002f;
-			if(floatingSpeed <= -0.06f)
+			floatingSpeed -= 0.003f;
+			if(floatingSpeed <= -0.1f)
 			{
-				floatingSpeed = -0.06f;	
+				floatingSpeed = 0;	
 				bFloatUp = true;
 				bFloatDown = false;
 			}
@@ -105,8 +105,7 @@ public class Screamer : MonoBehaviour {
 			bAttacking = true;
 		}
 		else if((Mathf.Sqrt(Mathf.Pow(GameObject.Find ("Player").transform.position.x - transform.position.x,2)) < detectionRadius &&
-			Mathf.Sqrt(Mathf.Pow(GameObject.Find ("Player").transform.position.y - transform.position.y,2)) < detectionRadius/2) &&
-			!bAttacking)
+			Mathf.Sqrt(Mathf.Pow(GameObject.Find ("Player").transform.position.y - transform.position.y,2)) < detectionRadius/2))
 		{
 			bMoveRight = (GameObject.Find ("Player").transform.position.x > transform.position.x);
 			bMoveLeft = (GameObject.Find ("Player").transform.position.x < transform.position.x);
@@ -117,14 +116,21 @@ public class Screamer : MonoBehaviour {
 			bMoveRight = bMoveLeft = false;
 			bAttacking = false;
 		}
-		bIdle = (!bAttacking && !bMoveRight && !bMoveLeft);
+		bIdle = (!bMoveRight && !bMoveLeft);
 	}
 	
 	private void updateAnimation()
 	{
 		if(bIsR)
 		{
-			if(bMoveRight)
+			if(bAttacking)
+			{
+				animation.columns = 4;
+				animation.rows = 3;
+				animation.framesPerSecond = 12;
+				renderer.material = idle_sprite_R;
+			}
+			else if(bMoveRight)
 			{
 				animation.columns = 2;
 				animation.rows = 2;
@@ -141,7 +147,14 @@ public class Screamer : MonoBehaviour {
 		}
 		else
 		{
-			if(bMoveLeft)
+			if(bAttacking)
+			{
+				animation.columns = 4;
+				animation.rows = 3;
+				animation.framesPerSecond = 12;
+				renderer.material = idle_sprite_L;
+			}
+			else if(bMoveLeft)
 			{
 				animation.columns = 2;
 				animation.rows = 2;
